@@ -14,7 +14,7 @@
   <a href="https://www.npmjs.com/package/@wranglebot/cli"><img src="https://img.shields.io/npm/v/@wranglebot/cli?style=flat-square&labelColor=0E1116&color=FFB224" alt="npm version"></a>
   <a href="https://github.com/leverframe/wranglebot/actions/workflows/ci.yml"><img src="https://github.com/leverframe/wranglebot/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
   <a href="https://github.com/leverframe/wranglebot/actions/workflows/codeql.yml"><img src="https://github.com/leverframe/wranglebot/actions/workflows/codeql.yml/badge.svg?branch=main" alt="CodeQL"></a>
-  <a href="https://github.com/leverframe/wranglebot/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-BUSL--1.1%20%E2%86%92%20MIT%202030-0E1116?style=flat-square&labelColor=0E1116&color=FFB224" alt="BUSL-1.1"></a>
+  <a href="https://github.com/leverframe/wranglebot/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-0E1116?style=flat-square&labelColor=0E1116&color=FFB224" alt="MIT"></a>
   <img src="https://img.shields.io/badge/node-%E2%89%A520-0E1116?style=flat-square&labelColor=0E1116&color=FFB224" alt="node >= 20">
 </p>
 
@@ -93,6 +93,5 @@ minor release receives security updates.
 
 ## License
 
-[BUSL-1.1](./LICENSE) — free for personal and noncommercial use; converts
-to MIT on 2030-10-16. Commercial use requires a written license from the
-Licensor.
+MIT — free for any use, including commercial and production use. Keep
+the copyright and license notice; that is the only condition.
