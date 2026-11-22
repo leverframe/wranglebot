@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/leverframe/wranglebot/main/site/brand/wranglebot-lockup-on-dark.svg">
-    <img src="https://raw.githubusercontent.com/leverframe/wranglebot/main/site/brand/wranglebot-lockup-on-light.svg" alt="WrangleBot" width="520">
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/leverframe/wranglebot-site/main/brand/wranglebot-lockup-on-dark.svg">
+    <img src="https://raw.githubusercontent.com/leverframe/wranglebot-site/main/brand/wranglebot-lockup-on-light.svg" alt="WrangleBot" width="520">
   </picture>
 </p>
 
