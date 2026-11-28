@@ -28,11 +28,11 @@ decision lands in a `.curt` record.
 No model calls. No heuristics trained on vibes. Three deterministic
 guardrails, every turn:
 
-| Guardrail | What it does |
-| --------- | ------------ |
-| `ast-gate` | Tree-sitter parse of Edit/Write content (TS + Python). Denies `child_process`/`subprocess`; warns on destructive deletes outside the workdir, Python `eval`/`exec`, network egress. Parse errors fail open. |
-| `scope-guard` | Real path containment (resolve + relative, Windows-safe). Denies writes outside the workdir/scope and to CI/config surfaces; warns on package-manifest writes. |
-| `loop-breaker` | Deterministic kill signals: identical (tool, input) fingerprint ≥3 warn / ≥5 deny; byte-identical shell output ≥3 turns; same test-failure hash ≥4 deny. All thresholds configurable. |
+| Guardrail      | What it does                                                                                                                                                                                                |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ast-gate`     | Tree-sitter parse of Edit/Write content (TS + Python). Denies `child_process`/`subprocess`; warns on destructive deletes outside the workdir, Python `eval`/`exec`, network egress. Parse errors fail open. |
+| `scope-guard`  | Real path containment (resolve + relative, Windows-safe). Denies writes outside the workdir/scope and to CI/config surfaces; warns on package-manifest writes.                                              |
+| `loop-breaker` | Deterministic kill signals: identical (tool, input) fingerprint ≥3 warn / ≥5 deny; byte-identical shell output ≥3 turns; same test-failure hash ≥4 deny. All thresholds configurable.                       |
 
 ## Install
 
@@ -59,7 +59,9 @@ Run WrangleBot as a native PreToolUse hook instead of a wrapper process:
 ```json
 {
   "hooks": {
-    "PreToolUse": [{ "hooks": [{ "type": "command", "command": "wranglebot-hook" }] }]
+    "PreToolUse": [
+      { "hooks": [{ "type": "command", "command": "wranglebot-hook" }] }
+    ]
   }
 }
 ```
