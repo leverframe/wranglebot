@@ -36,9 +36,15 @@ describe("parseArgs", () => {
   });
 
   it("rejects unknown commands and flags", () => {
-    expect(() => parseArgs(["watch", "claude-code"])).toThrow(/unknown command/);
-    expect(() => parseArgs(["run", "claude-code", "--wat"])).toThrow(/unknown flag/);
-    expect(() => parseArgs(["run", "claude-code", "--scope"])).toThrow(/requires a value/);
+    expect(() => parseArgs(["watch", "claude-code"])).toThrow(
+      /unknown command/,
+    );
+    expect(() => parseArgs(["run", "claude-code", "--wat"])).toThrow(
+      /unknown flag/,
+    );
+    expect(() => parseArgs(["run", "claude-code", "--scope"])).toThrow(
+      /requires a value/,
+    );
   });
 });
 
@@ -52,7 +58,8 @@ describe("main", () => {
   it("exits non-zero when the codex agent cannot run", async () => {
     const err = vi.spyOn(process.stderr, "write").mockReturnValue(true);
     const prev = process.env["CODEX_PATH"];
-    process.env["CODEX_PATH"] = "Z:\\definitely-not-real\\wranglebot-fake-codex";
+    process.env["CODEX_PATH"] =
+      "Z:\\definitely-not-real\\wranglebot-fake-codex";
     try {
       expect(await main(["run", "codex", "hi"])).toBe(1);
     } finally {

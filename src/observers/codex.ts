@@ -210,7 +210,11 @@ function parseLegacyEventMsg(
       return makeEvent(
         sessionId,
         "shell",
-        { command: msg["command"], cwd: asString(msg["cwd"]) ?? undefined, callId },
+        {
+          command: msg["command"],
+          cwd: asString(msg["cwd"]) ?? undefined,
+          callId,
+        },
         output,
       );
     }
@@ -265,14 +269,18 @@ export class CodexObserver {
 
       child.on("error", (err) => {
         this.child = null;
-        reject(new Error(`failed to spawn codex ("${codexPath}"): ${err.message}`));
+        reject(
+          new Error(`failed to spawn codex ("${codexPath}"): ${err.message}`),
+        );
       });
       child.on("close", (exitCode) => {
         this.child = null;
         // Non-zero codex exit (or the Windows shell's 9009 for a missing
         // binary) means the agent never ran the turn — surface it.
         if (exitCode !== 0) {
-          reject(new Error(`codex ("${codexPath}") exited with code ${exitCode}`));
+          reject(
+            new Error(`codex ("${codexPath}") exited with code ${exitCode}`),
+          );
         } else {
           resolve();
         }
@@ -301,7 +309,9 @@ export class CodexObserver {
   private handleLine(line: string, opts: CodexObserverOptions): void {
     const sid = codexSessionId(line);
     if (sid !== null) this.sessionId = sid;
-    const event = parseCodexEvent(line, { sessionId: this.sessionId ?? undefined });
+    const event = parseCodexEvent(line, {
+      sessionId: this.sessionId ?? undefined,
+    });
     if (event) opts.onEvent?.(event);
   }
 }

@@ -1,8 +1,16 @@
-import { spawn, type ChildProcess, type SpawnOptions } from "node:child_process";
+import {
+  spawn,
+  type ChildProcess,
+  type SpawnOptions,
+} from "node:child_process";
 import { createInterface } from "node:readline";
 import type { AgentEvent, AgentKind } from "../types.js";
 
-export type SpawnFn = (cmd: string, args: string[], opts: SpawnOptions) => ChildProcess;
+export type SpawnFn = (
+  cmd: string,
+  args: string[],
+  opts: SpawnOptions,
+) => ChildProcess;
 
 const SOURCE: AgentKind = "claude-code";
 
@@ -17,7 +25,11 @@ interface StreamLine {
 }
 
 /** Pure NDJSON line -> AgentEvents. tool_use blocks only; anything else is ignored. */
-export function parseStreamLine(raw: string, sessionId: string, ts: number): AgentEvent[] {
+export function parseStreamLine(
+  raw: string,
+  sessionId: string,
+  ts: number,
+): AgentEvent[] {
   const events: AgentEvent[] = [];
   let line: StreamLine;
   try {
@@ -30,8 +42,18 @@ export function parseStreamLine(raw: string, sessionId: string, ts: number): Age
   for (const block of content) {
     if (!block || typeof block !== "object") continue;
     const b = block as { type?: unknown; name?: unknown; input?: unknown };
-    if (b.type === "tool_use" && typeof b.name === "string" && b.input !== undefined) {
-      events.push({ ts, source: SOURCE, sessionId, tool: b.name, input: b.input });
+    if (
+      b.type === "tool_use" &&
+      typeof b.name === "string" &&
+      b.input !== undefined
+    ) {
+      events.push({
+        ts,
+        source: SOURCE,
+        sessionId,
+        tool: b.name,
+        input: b.input,
+      });
     }
   }
   return events;

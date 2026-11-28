@@ -37,11 +37,19 @@ interface HookInput {
  */
 export function handleHookInput(json: unknown): string {
   const gate = new AstGate({
-    workdir: typeof (json as HookInput | null)?.cwd === "string" ? (json as HookInput).cwd : undefined,
+    workdir:
+      typeof (json as HookInput | null)?.cwd === "string"
+        ? (json as HookInput).cwd
+        : undefined,
   });
 
-  const input = (typeof json === "object" && json !== null ? json : {}) as HookInput;
-  if (input.hook_event_name !== "PreToolUse" || typeof input.tool_name !== "string") {
+  const input = (
+    typeof json === "object" && json !== null ? json : {}
+  ) as HookInput;
+  if (
+    input.hook_event_name !== "PreToolUse" ||
+    typeof input.tool_name !== "string"
+  ) {
     return allowJson("ast-gate: not a PreToolUse event, allowing");
   }
   if (!GATED_TOOLS.has(input.tool_name)) {
@@ -51,7 +59,8 @@ export function handleHookInput(json: unknown): string {
   const event: AgentEvent = {
     ts: Date.now(),
     source: "claude-code",
-    sessionId: typeof input.session_id === "string" ? input.session_id : "unknown",
+    sessionId:
+      typeof input.session_id === "string" ? input.session_id : "unknown",
     tool: input.tool_name,
     input: input.tool_input,
   };
@@ -121,7 +130,9 @@ export async function main(): Promise<number> {
   try {
     json = JSON.parse(raw);
   } catch (err) {
-    process.stderr.write(`ast-gate hook: invalid hook JSON on stdin: ${String(err)}\n`);
+    process.stderr.write(
+      `ast-gate hook: invalid hook JSON on stdin: ${String(err)}\n`,
+    );
     return 2;
   }
 

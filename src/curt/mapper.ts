@@ -7,7 +7,10 @@ import type { CurtRecord } from "../types.js";
  * extension fields (`tool`, `verdict`, `sessionId`) which .curt readers
  * ignore on unknown fields but round-trip verbatim.
  */
-export function recordToMessage(record: CurtRecord, index: number): CurtMessage {
+export function recordToMessage(
+  record: CurtRecord,
+  index: number,
+): CurtMessage {
   return {
     id: `${record.sessionId}_${record.ts}_${index}`,
     role: "tool",

@@ -15,15 +15,24 @@ function tmpDir(): string {
 }
 
 afterEach(() => {
-  for (const dir of dirs.splice(0)) fs.rmSync(dir, { recursive: true, force: true });
+  for (const dir of dirs.splice(0))
+    fs.rmSync(dir, { recursive: true, force: true });
 });
 
-function record(sessionId: string, ts: number, tool: string, action: "allow" | "deny"): CurtRecord {
+function record(
+  sessionId: string,
+  ts: number,
+  tool: string,
+  action: "allow" | "deny",
+): CurtRecord {
   return {
     sessionId,
     ts,
     tool,
-    verdict: action === "deny" ? { action: "deny", reason: "outside workdir" } : { action },
+    verdict:
+      action === "deny"
+        ? { action: "deny", reason: "outside workdir" }
+        : { action },
   };
 }
 
@@ -32,7 +41,14 @@ describe("CurtEmitter", () => {
     const dir = tmpDir();
     const emitter = new CurtEmitter({ sessionId: "sess_abc12345" });
     for (let i = 0; i < 5; i++) {
-      emitter.add(record("sess_abc12345", 1700000000000 + i * 1000, i % 2 ? "Bash" : "Edit", i === 1 ? "deny" : "allow"));
+      emitter.add(
+        record(
+          "sess_abc12345",
+          1700000000000 + i * 1000,
+          i % 2 ? "Bash" : "Edit",
+          i === 1 ? "deny" : "allow",
+        ),
+      );
     }
     expect(emitter.size).toBe(5);
 
@@ -50,7 +66,9 @@ describe("CurtEmitter", () => {
 
     const tools = parsed!.messages.map((m) => m.tool);
     expect(tools).toEqual(["Edit", "Bash", "Edit", "Bash", "Edit"]);
-    const denied = JSON.parse(parsed!.messages[1]!.content) as { verdict: { action: string } };
+    const denied = JSON.parse(parsed!.messages[1]!.content) as {
+      verdict: { action: string };
+    };
     expect(denied.verdict.action).toBe("deny");
     // Underscored id gives curtFilename a stable suffix from the session id.
     expect(file).toContain("sess_abc12345".split("_").pop()!);
@@ -74,7 +92,9 @@ describe("CurtEmitter", () => {
     });
     emitter.add(record("s3", 5, "Edit", "allow"));
     const file = emitter.flush(dir);
-    const raw = JSON.parse(fs.readFileSync(file, "utf8")) as { generator?: string };
+    const raw = JSON.parse(fs.readFileSync(file, "utf8")) as {
+      generator?: string;
+    };
     const parsed = parseCurt(fs.readFileSync(file, "utf8"))!;
     expect(parsed.provider).toBe("claude-code");
     expect(parsed.model).toBe("claude-sonnet-4-5");
@@ -83,7 +103,9 @@ describe("CurtEmitter", () => {
 
   it("rejects records from a foreign session", () => {
     const emitter = new CurtEmitter({ sessionId: "s1" });
-    expect(() => emitter.add(record("other", 1, "Edit", "allow"))).toThrow(/sessionId/);
+    expect(() => emitter.add(record("other", 1, "Edit", "allow"))).toThrow(
+      /sessionId/,
+    );
   });
 
   it("flushes an empty buffer to a spec-valid conversation", () => {

@@ -8,7 +8,8 @@ import { loadGuardrails } from "./registry.js";
 
 export class CliError extends Error {}
 
-const USAGE = "usage: wranglebot run <claude-code|codex> [PROMPT...] [--workdir DIR] [--scope PATH]...";
+const USAGE =
+  "usage: wranglebot run <claude-code|codex> [PROMPT...] [--workdir DIR] [--scope PATH]...";
 
 export interface RunOptions {
   agent: AgentKind;
@@ -24,7 +25,8 @@ export interface ParsedCommand {
 
 export function parseArgs(argv: string[]): ParsedCommand {
   const [command, agent, ...rest] = argv;
-  if (command !== "run") throw new CliError(`unknown command: ${command ?? "(none)"}\n${USAGE}`);
+  if (command !== "run")
+    throw new CliError(`unknown command: ${command ?? "(none)"}\n${USAGE}`);
   if (agent !== "claude-code" && agent !== "codex") {
     throw new CliError(`unknown agent: ${agent ?? "(missing)"}\n${USAGE}`);
   }
@@ -61,11 +63,16 @@ interface CurtEmitterLike {
 }
 
 /** Optional .curt emission; skipped with a warning if the curt module is missing. */
-async function loadCurtEmitter(sessionId: string): Promise<CurtEmitterLike | null> {
+async function loadCurtEmitter(
+  sessionId: string,
+): Promise<CurtEmitterLike | null> {
   const spec = new URL("../curt/curt-emitter.js", import.meta.url).href;
   try {
-    const mod = (await import(spec)) as { CurtEmitter?: new (o: object) => CurtEmitterLike };
-    if (typeof mod.CurtEmitter !== "function") throw new Error("CurtEmitter export missing");
+    const mod = (await import(spec)) as {
+      CurtEmitter?: new (o: object) => CurtEmitterLike;
+    };
+    if (typeof mod.CurtEmitter !== "function")
+      throw new Error("CurtEmitter export missing");
     return new mod.CurtEmitter({ sessionId });
   } catch (err) {
     notify(`curt emission disabled: ${(err as Error).message.split("\n")[0]}`);

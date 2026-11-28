@@ -4,7 +4,13 @@ import { createPipeline } from "../../src/daemon/pipeline.js";
 import { SupervisorSession } from "../../src/daemon/session.js";
 
 function makeEvent(tool = "Bash"): AgentEvent {
-  return { ts: 1, source: "claude-code", sessionId: "s1", tool, input: { command: "ls" } };
+  return {
+    ts: 1,
+    source: "claude-code",
+    sessionId: "s1",
+    tool,
+    input: { command: "ls" },
+  };
 }
 
 function guardrail(name: string, verdict: Verdict | null = null) {
@@ -38,7 +44,10 @@ describe("SupervisorSession", () => {
   });
 
   it("first rewrite wins and carries updatedInput", () => {
-    const a = guardrail("a", { action: "rewrite", updatedInput: { command: "echo hi" } });
+    const a = guardrail("a", {
+      action: "rewrite",
+      updatedInput: { command: "echo hi" },
+    });
     const b = guardrail("b", { action: "deny" });
     const s = new SupervisorSession({ sessionId: "s1", guardrails: [a, b] });
     expect(s.handle(makeEvent())).toEqual({
@@ -83,7 +92,10 @@ describe("createPipeline", () => {
 
   it("rejects non-array config", () => {
     expect(() =>
-      createPipeline({ sources: "claude-code" as unknown as [], guardrails: [] }),
+      createPipeline({
+        sources: "claude-code" as unknown as [],
+        guardrails: [],
+      }),
     ).toThrow(TypeError);
   });
 });

@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  codexSessionId,
-  parseCodexEvent,
-} from "../../src/observers/codex.js";
+import { codexSessionId, parseCodexEvent } from "../../src/observers/codex.js";
 
 // Fixtures mirror the documented `codex exec --json` JSONL streams.
 // Modern: codex-rs/exec/src/exec_events.rs (ThreadEvent, tag "type";

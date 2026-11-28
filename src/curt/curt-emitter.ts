@@ -1,6 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
-import { curtFilename, serializeCurt, type CurtConversation } from "curt-format";
+import {
+  curtFilename,
+  serializeCurt,
+  type CurtConversation,
+} from "curt-format";
 import type { CurtRecord } from "../types.js";
 import { recordToMessage } from "./mapper.js";
 
@@ -66,7 +70,9 @@ export class CurtEmitter {
       writePath.endsWith("/") ||
       writePath.endsWith("\\") ||
       (fs.existsSync(writePath) && fs.statSync(writePath).isDirectory());
-    const file = isDir ? path.join(writePath, curtFilename(conversation)) : writePath;
+    const file = isDir
+      ? path.join(writePath, curtFilename(conversation))
+      : writePath;
 
     fs.mkdirSync(path.dirname(file), { recursive: true });
     fs.writeFileSync(file, body, "utf8");

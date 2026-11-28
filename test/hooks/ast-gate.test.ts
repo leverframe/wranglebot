@@ -85,9 +85,7 @@ describe("AstGate", () => {
 
   it("warns on eval/exec in Python", () => {
     const v = gate.inspect(
-      editEvent(
-        writeInput("scripts/dyn.py", 'value = eval("1 + 1")\n'),
-      ),
+      editEvent(writeInput("scripts/dyn.py", 'value = eval("1 + 1")\n')),
     );
     expect(v?.action).toBe("warn");
     expect(v?.reason).toContain("eval");
@@ -96,7 +94,9 @@ describe("AstGate", () => {
   it("warns on deletion outside the workdir", () => {
     // Absolute on every platform, forward-slashed so it's a valid string
     // literal in emitted code, and guaranteed outside process.cwd().
-    const outside = path.resolve(process.cwd(), "..", "astgate-outside-target").replaceAll("\\", "/");
+    const outside = path
+      .resolve(process.cwd(), "..", "astgate-outside-target")
+      .replaceAll("\\", "/");
     const v = gate.inspect(
       editEvent(
         writeInput(
@@ -126,16 +126,14 @@ describe("AstGate", () => {
       editEvent(
         writeInput(
           "src/util.ts",
-          'export function add(a: number, b: number): number {\n  return a + b;\n}\n',
+          "export function add(a: number, b: number): number {\n  return a + b;\n}\n",
         ),
       ),
     );
     expect(ts?.action).toBe("allow");
 
     const py = gate.inspect(
-      editEvent(
-        writeInput("util.py", "def add(a, b):\n    return a + b\n"),
-      ),
+      editEvent(writeInput("util.py", "def add(a, b):\n    return a + b\n")),
     );
     expect(py?.action).toBe("allow");
   });
@@ -166,19 +164,25 @@ describe("AstGate", () => {
 
   it("handles MultiEdit and Edit input shapes", () => {
     const multi = gate.inspect(
-      editEvent({
-        file_path: "a.ts",
-        edits: [{ old_string: "a", new_string: 'require("child_process")' }],
-      }, "MultiEdit"),
+      editEvent(
+        {
+          file_path: "a.ts",
+          edits: [{ old_string: "a", new_string: 'require("child_process")' }],
+        },
+        "MultiEdit",
+      ),
     );
     expect(multi?.action).toBe("deny");
 
     const edit = gate.inspect(
-      editEvent({
-        file_path: "b.py",
-        old_string: "x = 1",
-        new_string: 'value = eval(input())',
-      }, "Edit"),
+      editEvent(
+        {
+          file_path: "b.py",
+          old_string: "x = 1",
+          new_string: "value = eval(input())",
+        },
+        "Edit",
+      ),
     );
     expect(edit?.action).toBe("warn");
   });

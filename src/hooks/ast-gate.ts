@@ -179,7 +179,11 @@ export function extractEditTarget(input: unknown): GateTarget | null {
   } else if (Array.isArray(rec.edits)) {
     // MultiEdit: concatenate the new_string of every hunk.
     const parts = rec.edits
-      .map((e) => (typeof e === "object" && e !== null ? (e as Record<string, unknown>).new_string : undefined))
+      .map((e) =>
+        typeof e === "object" && e !== null
+          ? (e as Record<string, unknown>).new_string
+          : undefined,
+      )
       .filter((s): s is string => typeof s === "string");
     if (parts.length > 0) content = parts.join("\n");
   }
@@ -198,8 +202,13 @@ function loadGrammars(): Grammars | null {
   try {
     // Synchronous CJS load: inspect() must stay sync per the Guardrail
     // contract, and dynamic import() cannot be awaited there.
-    const ParserCtor = requireCjs("tree-sitter") as unknown as { new (): TsParser };
-    const tsGrammars = requireCjs("tree-sitter-typescript") as Record<string, unknown>;
+    const ParserCtor = requireCjs("tree-sitter") as unknown as {
+      new (): TsParser;
+    };
+    const tsGrammars = requireCjs("tree-sitter-typescript") as Record<
+      string,
+      unknown
+    >;
     const pyGrammar = requireCjs("tree-sitter-python") as unknown;
     grammarsCache = {
       ts: tsGrammars.typescript,
@@ -228,7 +237,8 @@ function walk(root: TsNode, visit: (n: TsNode) => void): void {
   while (stack.length > 0) {
     const n = stack.pop() as TsNode;
     visit(n);
-    for (let i = n.namedChildren.length - 1; i >= 0; i--) stack.push(n.namedChildren[i] as TsNode);
+    for (let i = n.namedChildren.length - 1; i >= 0; i--)
+      stack.push(n.namedChildren[i] as TsNode);
   }
 }
 
@@ -337,7 +347,10 @@ export class AstGate implements Guardrail {
   evaluate(target: GateTarget): Verdict | null {
     const grammars = loadGrammars();
     if (!grammars) {
-      return { action: "allow", reason: "ast-gate: grammars unavailable, not gating" };
+      return {
+        action: "allow",
+        reason: "ast-gate: grammars unavailable, not gating",
+      };
     }
     let tree: TsTree;
     try {
@@ -357,11 +370,16 @@ export class AstGate implements Guardrail {
 
       if (rule.modules) {
         if (moduleRefs.size === 0) {
-          for (const r of collectModuleRefs(tree.rootNode, target.lang)) moduleRefs.add(r);
+          for (const r of collectModuleRefs(tree.rootNode, target.lang))
+            moduleRefs.add(r);
         }
         for (const ref of moduleRefs) {
           if (moduleMatches(ref, rule.modules)) {
-            findings.push({ rule, line: 1, detail: `module "${normalizeModuleRef(ref)}"` });
+            findings.push({
+              rule,
+              line: 1,
+              detail: `module "${normalizeModuleRef(ref)}"`,
+            });
             break;
           }
         }
@@ -386,7 +404,10 @@ export class AstGate implements Guardrail {
 
         if (rule.calleeObjects) {
           const parts = callee.split(".");
-          if (parts.length >= 2 && rule.calleeObjects.includes(parts[0] as string)) {
+          if (
+            parts.length >= 2 &&
+            rule.calleeObjects.includes(parts[0] as string)
+          ) {
             findings.push({ rule, line, detail: callee });
             return;
           }
@@ -395,7 +416,11 @@ export class AstGate implements Guardrail {
         if (rule.bareCallees?.includes(callee)) {
           if (rule.deletionPathCheck) {
             const arg = firstStringArg(n);
-            if (arg !== null && resolveInsideWorkdir(arg, this.workdir) === true) return;
+            if (
+              arg !== null &&
+              resolveInsideWorkdir(arg, this.workdir) === true
+            )
+              return;
           }
           findings.push({ rule, line, detail: callee });
         }
@@ -407,7 +432,8 @@ export class AstGate implements Guardrail {
     const denied = findings.filter((f) => f.rule.action === "deny");
     const chosen = denied.length > 0 ? denied : findings;
     const reasons = chosen.map(
-      (f) => `${f.rule.id}: ${f.rule.message} (${f.detail}${f.line > 1 ? `, line ${f.line}` : ""})`,
+      (f) =>
+        `${f.rule.id}: ${f.rule.message} (${f.detail}${f.line > 1 ? `, line ${f.line}` : ""})`,
     );
     return {
       action: denied.length > 0 ? "deny" : "warn",

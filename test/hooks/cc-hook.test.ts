@@ -32,7 +32,9 @@ describe("cc-hook handleHookInput", () => {
 
     expect(out.hookSpecificOutput.hookEventName).toBe("PreToolUse");
     expect(out.hookSpecificOutput.permissionDecision).toBe("deny");
-    expect(out.hookSpecificOutput.permissionDecisionReason).toContain("child_process");
+    expect(out.hookSpecificOutput.permissionDecisionReason).toContain(
+      "child_process",
+    );
   });
 
   it("maps warn verdicts to 'ask'", () => {
@@ -68,7 +70,9 @@ describe("cc-hook handleHookInput", () => {
       ),
     );
     expect(out.hookSpecificOutput.permissionDecision).toBe("allow");
-    expect(out.hookSpecificOutput.permissionDecisionReason).toContain("unparseable");
+    expect(out.hookSpecificOutput.permissionDecisionReason).toContain(
+      "unparseable",
+    );
   });
 
   it("allows unknown extensions without evaluation", () => {

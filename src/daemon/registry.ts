@@ -32,8 +32,14 @@ function isGuardrailInstance(x: unknown): x is Guardrail {
 }
 
 function isGuardrailClass(x: unknown): x is GuardrailCtor {
-  const proto = (x as { prototype?: Record<string, unknown> } | null)?.prototype;
-  return typeof x === "function" && !!proto && typeof proto.inspect === "function" && typeof proto.observe === "function";
+  const proto = (x as { prototype?: Record<string, unknown> } | null)
+    ?.prototype;
+  return (
+    typeof x === "function" &&
+    !!proto &&
+    typeof proto.inspect === "function" &&
+    typeof proto.observe === "function"
+  );
 }
 
 function warn(msg: string): void {
@@ -46,7 +52,9 @@ function warn(msg: string): void {
  * workdir/scope options), or arrays of instances. Missing or broken modules
  * are skipped with a stderr warning — never fatal.
  */
-export async function loadGuardrails(opts: GuardrailLoadOptions = {}): Promise<Guardrail[]> {
+export async function loadGuardrails(
+  opts: GuardrailLoadOptions = {},
+): Promise<Guardrail[]> {
   const constructorOptions: Record<string, unknown> = {
     workdir: opts.workdir ?? process.cwd(),
     allowedPaths: opts.scope ?? [],

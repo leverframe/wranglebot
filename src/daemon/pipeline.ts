@@ -8,8 +8,10 @@ export interface PipelineConfig {
 }
 
 export function createPipeline(cfg: PipelineConfig): SupervisorSession {
-  if (!Array.isArray(cfg.sources)) throw new TypeError("sources must be an array of AgentKind");
-  if (!Array.isArray(cfg.guardrails)) throw new TypeError("guardrails must be an array of Guardrail");
+  if (!Array.isArray(cfg.sources))
+    throw new TypeError("sources must be an array of AgentKind");
+  if (!Array.isArray(cfg.guardrails))
+    throw new TypeError("guardrails must be an array of Guardrail");
   return new SupervisorSession({
     sessionId: randomUUID(),
     sources: cfg.sources,

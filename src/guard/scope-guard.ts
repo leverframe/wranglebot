@@ -16,9 +16,17 @@ const FILE_TOOLS = new Set([
 const PATH_FIELDS = ["file_path", "path", "notebook_path"] as const;
 
 /** v1 blanket-denied dot-config / CI locations (normalized, forward-slash). */
-const DEFAULT_DENIED_PATTERNS = [".git/", ".github/workflows/", ".claude/settings.json"];
+const DEFAULT_DENIED_PATTERNS = [
+  ".git/",
+  ".github/workflows/",
+  ".claude/settings.json",
+];
 
-const MANIFEST_FILES = new Set(["package.json", "package-lock.json", "requirements.txt"]);
+const MANIFEST_FILES = new Set([
+  "package.json",
+  "package-lock.json",
+  "requirements.txt",
+]);
 
 export interface ScopeGuardOptions {
   /** Additional directory roots the agent may write to, outside workdir. */
@@ -44,7 +52,10 @@ export class ScopeGuard implements Guardrail {
   constructor(options: ScopeGuardOptions) {
     this.workdir = path.resolve(options.workdir);
     this.allowedPaths = options.allowedPaths.map((p) => path.resolve(p));
-    this.deniedPatterns = [...DEFAULT_DENIED_PATTERNS, ...(options.deniedPatterns ?? [])];
+    this.deniedPatterns = [
+      ...DEFAULT_DENIED_PATTERNS,
+      ...(options.deniedPatterns ?? []),
+    ];
   }
 
   inspect(event: AgentEvent): Verdict | null {
@@ -56,7 +67,9 @@ export class ScopeGuard implements Guardrail {
     const resolved = path.resolve(target);
 
     const inWorkdir = isWithin(this.workdir, resolved);
-    const allowedRoot = this.allowedPaths.find((root) => isWithin(root, resolved));
+    const allowedRoot = this.allowedPaths.find((root) =>
+      isWithin(root, resolved),
+    );
 
     if (!inWorkdir && allowedRoot === undefined) {
       const boundary = this.allowedPaths.length
@@ -133,5 +146,7 @@ function normalizeCase(p: string): string {
 /** Substring match on the forward-slash, case-folded absolute path. */
 function matchesDeniedPattern(resolved: string, patterns: string[]): boolean {
   const flat = resolved.replaceAll("\\", "/").toLowerCase();
-  return patterns.some((pattern) => flat.includes(pattern.replaceAll("\\", "/").toLowerCase()));
+  return patterns.some((pattern) =>
+    flat.includes(pattern.replaceAll("\\", "/").toLowerCase()),
+  );
 }

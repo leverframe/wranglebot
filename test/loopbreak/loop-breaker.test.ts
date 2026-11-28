@@ -48,8 +48,9 @@ describe("identical (tool, input) fingerprint loop", () => {
         ev({ input: { command: `echo variant ${i}` }, output: `out ${i}` }),
       );
     }
-    expect(breaker.inspect(ev({ input: { command: "echo variant 5" } })))
-      .toBeNull();
+    expect(
+      breaker.inspect(ev({ input: { command: "echo variant 5" } })),
+    ).toBeNull();
   });
 
   it("tracks sessions independently and reset() clears a single session", () => {
@@ -58,13 +59,17 @@ describe("identical (tool, input) fingerprint loop", () => {
       cycle(breaker, ev({ sessionId: "s1", output: `out ${i}` }));
     }
     // s2 is untouched by s1's loop.
-    expect(cycle(breaker, ev({ sessionId: "s2", output: "s2 out" }))).toBeNull();
+    expect(
+      cycle(breaker, ev({ sessionId: "s2", output: "s2 out" })),
+    ).toBeNull();
 
     breaker.reset("s1");
     expect(cycle(breaker, ev({ sessionId: "s1", output: "fresh" }))).toBeNull();
 
     // After reset("s1") the counter restarts at 1 — two more attempts stay silent.
-    expect(cycle(breaker, ev({ sessionId: "s1", output: "again 2" }))).toBeNull();
+    expect(
+      cycle(breaker, ev({ sessionId: "s1", output: "again 2" })),
+    ).toBeNull();
   });
 
   it("reset() with no argument clears all sessions", () => {
